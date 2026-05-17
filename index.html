@@ -1,0 +1,2318 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<title>Lumina Beats — Premium Binaural & Isochronic Generator</title>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<style>
+:root {
+  --bg: #050510;
+  --bg-soft: rgba(10,10,30,0.9);
+  --fg: #f5f5ff;
+  --accent: #8b7bff;
+  --accent-soft: rgba(139,123,255,0.35);
+  --accent-strong: #c79bff;
+  --border: rgba(255,255,255,0.08);
+  --danger: #ff4f6a;
+  --success: #4fe3a1;
+  --nav-height: 52px;
+  --radius-lg: 18px;
+  --radius-md: 12px;
+  --radius-sm: 999px;
+  --shadow-soft: 0 18px 60px rgba(0,0,0,0.7);
+  --glass: rgba(10,10,30,0.85);
+  --glass-strong: rgba(10,10,30,0.95);
+  --font-main: system-ui, -apple-system, BlinkMacSystemFont, "SF Pro Text", sans-serif;
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html, body {
+  margin: 0;
+  padding: 0;
+  height: 100%;
+}
+
+body {
+  font-family: var(--font-main);
+  background:
+    radial-gradient(circle at top, #26265a 0, #050510 55%),
+    radial-gradient(circle at bottom, #120b2a 0, #050510 60%);
+  color: var(--fg);
+  display: flex;
+  flex-direction: column;
+}
+
+/* Layout */
+
+.app-shell {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  padding: 10px;
+}
+
+.app-frame {
+  flex: 1;
+  display: grid;
+  grid-template-rows: var(--nav-height) minmax(0, 1fr);
+  max-width: 1280px;
+  margin: 0 auto;
+  border-radius: var(--radius-lg);
+  border: 1px solid var(--border);
+  background: linear-gradient(135deg, rgba(15,15,40,0.96), rgba(5,5,16,0.98));
+  box-shadow: var(--shadow-soft);
+  overflow: hidden;
+}
+
+/* Top nav */
+
+.app-nav {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 16px;
+  border-bottom: 1px solid var(--border);
+  backdrop-filter: blur(18px);
+  background: linear-gradient(90deg, rgba(10,10,30,0.9), rgba(10,10,30,0.7));
+}
+
+.nav-left {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.app-logo {
+  width: 26px;
+  height: 26px;
+  border-radius: 50%;
+  background: radial-gradient(circle at 30% 20%, #ffffff, #8b7bff 40%, #050510 70%);
+  box-shadow: 0 0 18px rgba(139,123,255,0.7);
+}
+
+.app-title-block h1 {
+  margin: 0;
+  font-size: 16px;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+}
+
+.app-title-block p {
+  margin: 0;
+  font-size: 10px;
+  opacity: 0.7;
+}
+
+.nav-right {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.theme-tabs {
+  display: flex;
+  gap: 4px;
+  padding: 3px;
+  border-radius: 999px;
+  background: rgba(255,255,255,0.03);
+}
+
+.theme-tab {
+  border-radius: 999px;
+  border: none;
+  padding: 4px 10px;
+  font-size: 10px;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  background: transparent;
+  color: var(--fg);
+  cursor: pointer;
+  opacity: 0.7;
+}
+
+.theme-tab.active {
+  background: rgba(139,123,255,0.25);
+  opacity: 1;
+}
+
+.nav-badge {
+  font-size: 10px;
+  padding: 4px 10px;
+  border-radius: 999px;
+  border: 1px solid var(--accent-soft);
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  opacity: 0.9;
+}
+
+/* Main content */
+
+.app-main {
+  display: grid;
+  grid-template-columns: minmax(0, 320px) minmax(0, 1.4fr);
+  min-height: 0;
+}
+
+@media (max-width: 900px) {
+  .app-main {
+    grid-template-columns: 1fr;
+    grid-template-rows: auto minmax(0, 1fr);
+  }
+}
+
+/* Sidebar */
+
+.sidebar {
+  border-right: 1px solid var(--border);
+  padding: 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  background: radial-gradient(circle at top left, rgba(139,123,255,0.12), transparent 55%);
+}
+
+@media (max-width: 900px) {
+  .sidebar {
+    border-right: none;
+    border-bottom: 1px solid var(--border);
+  }
+}
+
+.panel {
+  background: var(--glass);
+  border-radius: var(--radius-md);
+  border: 1px solid var(--border);
+  padding: 10px 10px 8px;
+}
+
+.panel-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  margin-bottom: 6px;
+}
+
+.panel-title {
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.14em;
+  opacity: 0.9;
+}
+
+.panel-sub {
+  font-size: 10px;
+  opacity: 0.6;
+}
+
+.control-row {
+  margin-bottom: 8px;
+}
+
+.control-label {
+  display: flex;
+  justify-content: space-between;
+  font-size: 11px;
+  margin-bottom: 3px;
+  opacity: 0.85;
+}
+
+.control-label span.value {
+  font-variant-numeric: tabular-nums;
+  opacity: 0.9;
+}
+
+input[type=range] {
+  width: 100%;
+  -webkit-appearance: none;
+  background: transparent;
+}
+
+input[type=range]::-webkit-slider-runnable-track {
+  height: 4px;
+  background: linear-gradient(90deg, rgba(139,123,255,0.4), rgba(255,255,255,0.1));
+  border-radius: 999px;
+}
+
+input[type=range]::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  background: var(--accent);
+  margin-top: -5px;
+  box-shadow: 0 0 0 4px rgba(139,123,255,0.3);
+}
+
+input[type=range]::-moz-range-track {
+  height: 4px;
+  background: linear-gradient(90deg, rgba(139,123,255,0.4), rgba(255,255,255,0.1));
+  border-radius: 999px;
+}
+
+input[type=range]::-moz-range-thumb {
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  background: var(--accent);
+  border: none;
+  box-shadow: 0 0 0 4px rgba(139,123,255,0.3);
+}
+
+.toggle-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 11px;
+  margin-top: 4px;
+}
+
+.toggle-row label {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  cursor: pointer;
+}
+
+.toggle-row input[type=checkbox] {
+  width: 14px;
+  height: 14px;
+}
+
+.button-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-top: 8px;
+}
+
+.btn {
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--accent-soft);
+  background: rgba(255,255,255,0.02);
+  color: var(--fg);
+  font-size: 10px;
+  padding: 5px 11px;
+  cursor: pointer;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+}
+
+.btn.primary {
+  background: var(--accent);
+  border-color: var(--accent);
+  color: #050510;
+}
+
+.btn.ghost {
+  background: transparent;
+}
+
+.btn.small {
+  font-size: 9px;
+  padding: 4px 9px;
+}
+
+.btn:active {
+  transform: translateY(1px);
+}
+
+.preset-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-top: 4px;
+}
+
+.preset-btn {
+  font-size: 10px;
+  padding: 4px 8px;
+  border-radius: 999px;
+  border: 1px solid rgba(255,255,255,0.12);
+  background: rgba(255,255,255,0.02);
+  cursor: pointer;
+}
+
+.preset-btn:hover {
+  border-color: var(--accent-soft);
+}
+
+.preset-btn.custom {
+  border-style: dashed;
+}
+
+/* Main area */
+
+.main-area {
+  padding: 12px;
+  display: grid;
+  grid-template-rows: minmax(0, 1.4fr) minmax(0, 1fr);
+  gap: 10px;
+  background: radial-gradient(circle at top right, rgba(139,123,255,0.16), transparent 55%);
+}
+
+@media (max-width: 900px) {
+  .main-area {
+    grid-template-rows: minmax(0, 1.2fr) minmax(0, 1fr);
+  }
+}
+
+/* Visualizer */
+
+.visualizer-card {
+  position: relative;
+  border-radius: var(--radius-md);
+  border: 1px solid var(--border);
+  background: radial-gradient(circle at top, #25255a 0, #050510 60%);
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+
+.visualizer-canvas-wrap {
+  position: relative;
+  flex: 1;
+  min-height: 220px;
+}
+
+canvas#visualizer {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  display: block;
+}
+
+.visualizer-inner {
+  position: relative;
+  padding: 10px 10px 12px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+}
+
+.visual-top-row {
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  font-size: 10px;
+  opacity: 0.8;
+}
+
+.visual-top-row span {
+  max-width: 48%;
+}
+
+.visual-center-row {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+}
+
+.timer-shell {
+  position: relative;
+  width: min(220px, 60vw);
+  height: min(220px, 60vw);
+  border-radius: 50%;
+  border: 1px solid rgba(255,255,255,0.12);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: radial-gradient(circle, rgba(139,123,255,0.18), transparent 60%);
+  box-shadow: 0 0 40px rgba(139,123,255,0.3);
+}
+
+.timer-ring-bg {
+  position: absolute;
+  inset: 10px;
+  border-radius: 50%;
+  border: 2px solid rgba(255,255,255,0.08);
+  mask: radial-gradient(circle, transparent 60%, black 61%);
+}
+
+.timer-ring-fg {
+  position: absolute;
+  inset: 10px;
+  border-radius: 50%;
+  border: 2px solid var(--accent-strong);
+  mask: radial-gradient(circle, transparent 60%, black 61%);
+  transform: rotate(-90deg);
+  transform-origin: center;
+  clip-path: polygon(50% 50%, 0 0, 100% 0, 100% 100%, 0 100%, 0 0);
+}
+
+.timer-content {
+  text-align: center;
+}
+
+.timer-main {
+  font-size: 26px;
+  font-variant-numeric: tabular-nums;
+}
+
+.timer-sub {
+  font-size: 11px;
+  opacity: 0.75;
+  margin-top: 2px;
+}
+
+/* Breathing guide */
+
+.breath-circle {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  border: 1px solid rgba(255,255,255,0.12);
+  box-shadow: 0 0 40px rgba(139,123,255,0.25);
+  opacity: 0.0;
+  pointer-events: none;
+}
+
+/* Timer buttons */
+
+.timer-buttons {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  justify-content: center;
+}
+
+.visual-bottom-row {
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 10px;
+  margin-top: 4px;
+}
+
+.visual-bottom-row span {
+  max-width: 60%;
+}
+
+.visual-bottom-row .btn {
+  flex-shrink: 0;
+}
+
+/* Info panel */
+
+.info-card {
+  border-radius: var(--radius-md);
+  border: 1px solid var(--border);
+  background: var(--glass-strong);
+  padding: 10px;
+  font-size: 11px;
+  line-height: 1.5;
+  overflow-y: auto;
+}
+
+.info-card h3 {
+  margin: 0 0 6px;
+  font-size: 12px;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+}
+
+.info-card p {
+  margin: 4px 0;
+  opacity: 0.85;
+}
+
+.info-card ul {
+  margin: 4px 0 4px 16px;
+  padding: 0;
+}
+
+.info-card li {
+  margin-bottom: 2px;
+}
+
+.info-footer {
+  margin-top: 6px;
+  font-size: 10px;
+  opacity: 0.7;
+}
+
+.linkish {
+  color: var(--accent-strong);
+  cursor: pointer;
+  text-decoration: underline;
+}
+
+/* Toasts */
+
+.toast-container {
+  position: fixed;
+  bottom: 14px;
+  right: 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  z-index: 40;
+}
+
+.toast {
+  min-width: 200px;
+  max-width: 280px;
+  padding: 8px 10px;
+  border-radius: 10px;
+  font-size: 11px;
+  background: rgba(10,10,30,0.96);
+  border: 1px solid rgba(255,255,255,0.12);
+  box-shadow: 0 10px 30px rgba(0,0,0,0.6);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  opacity: 0;
+  transform: translateY(8px);
+  transition: opacity 0.18s ease, transform 0.18s ease;
+}
+
+.toast.show {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.toast span.label {
+  opacity: 0.9;
+}
+
+.toast span.type {
+  font-size: 10px;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  opacity: 0.7;
+}
+
+/* Science modal */
+
+.modal-backdrop {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.7);
+  display: none;
+  align-items: center;
+  justify-content: center;
+  z-index: 30;
+}
+
+.modal {
+  max-width: 560px;
+  width: 92%;
+  max-height: 80vh;
+  overflow-y: auto;
+  background: #050510;
+  border-radius: 14px;
+  border: 1px solid var(--border);
+  padding: 14px;
+  font-size: 12px;
+}
+
+.modal h2 {
+  margin: 0 0 8px;
+  font-size: 14px;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+}
+
+.modal p {
+  margin: 4px 0;
+  opacity: 0.9;
+}
+
+.modal ul {
+  margin: 4px 0 4px 18px;
+  padding: 0;
+}
+
+.modal li {
+  margin-bottom: 4px;
+}
+
+.modal-close {
+  margin-top: 10px;
+  text-align: right;
+}
+
+.modal-close button {
+  border-radius: 999px;
+  border: 1px solid var(--accent-soft);
+  background: transparent;
+  color: var(--fg);
+  font-size: 11px;
+  padding: 4px 10px;
+  cursor: pointer;
+}
+
+/* Immerse fullscreen */
+
+.immerse-overlay {
+  position: fixed;
+  inset: 0;
+  background: radial-gradient(circle at top, #25255a 0, #050510 60%);
+  display: none;
+  flex-direction: column;
+  z-index: 35;
+}
+
+.immerse-top {
+  height: 44px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 10px;
+  border-bottom: 1px solid var(--border);
+  background: rgba(5,5,16,0.9);
+  backdrop-filter: blur(16px);
+}
+
+.immerse-top-left {
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.14em;
+  opacity: 0.85;
+}
+
+.immerse-top-right {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.immerse-main {
+  flex: 1;
+  position: relative;
+}
+
+canvas#immersiveCanvas {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  display: block;
+}
+
+.immerse-controls {
+  position: absolute;
+  bottom: 10px;
+  left: 10px;
+  right: 10px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 10px;
+}
+
+/* Responsive tweaks */
+
+@media (max-width: 600px) {
+  .app-frame {
+    border-radius: 0;
+    box-shadow: none;
+  }
+  .app-shell {
+    padding: 0;
+  }
+  .nav-badge {
+    display: none;
+  }
+  .visual-top-row {
+    flex-direction: column;
+    gap: 4px;
+  }
+  .visual-bottom-row {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 6px;
+  }
+  .visual-bottom-row span {
+    max-width: 100%;
+  }
+  .visual-bottom-row .btn {
+    align-self: flex-end;
+  }
+}
+</style>
+</head>
+<body>
+<div class="app-shell">
+  <div class="app-frame">
+    <header class="app-nav">
+      <div class="nav-left">
+        <div class="app-logo"></div>
+        <div class="app-title-block">
+          <h1>Lumina Beats</h1>
+          <p>Binaural & Isochronic Ritual Engine</p>
+        </div>
+      </div>
+      <div class="nav-right">
+        <div class="theme-tabs" id="themeTabs">
+          <button class="theme-tab active" data-theme="orb">Orb</button>
+          <button class="theme-tab" data-theme="particles">Particles</button>
+          <button class="theme-tab" data-theme="mandala">Mandala</button>
+          <button class="theme-tab" data-theme="waves">Waves</button>
+        </div>
+        <div class="nav-badge">Client‑Side • No Tracking</div>
+      </div>
+    </header>
+
+    <div class="app-main">
+      <!-- Sidebar -->
+      <aside class="sidebar">
+        <section class="panel">
+          <div class="panel-header">
+            <div class="panel-title">Core Frequencies</div>
+            <div class="panel-sub">Headphones recommended</div>
+          </div>
+
+          <div class="control-row">
+            <div class="control-label">
+              <span>Carrier Frequency</span>
+              <span class="value"><span id="carrierValue">200</span> Hz</span>
+            </div>
+            <input id="carrierSlider" type="range" min="40" max="600" value="200" />
+          </div>
+
+          <div class="control-row">
+            <div class="control-label">
+              <span>Beat Frequency</span>
+              <span class="value"><span id="beatValue">8</span> Hz</span>
+            </div>
+            <input id="beatSlider" type="range" min="0.5" max="40" step="0.5" value="8" />
+          </div>
+
+          <div class="toggle-row">
+            <label>
+              <input id="isoToggle" type="checkbox" />
+              <span>Isochronic Pulsing</span>
+            </label>
+            <span style="opacity:0.7;">Amplitude modulation</span>
+          </div>
+
+          <div class="toggle-row">
+            <label>
+              <input id="breathToggle" type="checkbox" />
+              <span>Breathing Guide</span>
+            </label>
+            <span style="opacity:0.7;">Synced to beat</span>
+          </div>
+
+          <div class="button-row">
+            <button id="playBtn" class="btn primary">Start Session</button>
+            <button id="scienceBtn" class="btn small">Science</button>
+          </div>
+        </section>
+
+        <section class="panel">
+          <div class="panel-header">
+            <div class="panel-title">Frequency Ramp</div>
+            <div class="panel-sub">Glide into target state</div>
+          </div>
+
+          <div class="control-row">
+            <div class="control-label">
+              <span>Ramp Beat To</span>
+              <span class="value"><span id="rampBeatValue">4</span> Hz</span>
+            </div>
+            <input id="rampBeatSlider" type="range" min="0.5" max="40" step="0.5" value="4" />
+          </div>
+
+          <div class="control-row">
+            <div class="control-label">
+              <span>Ramp Duration</span>
+              <span class="value"><span id="rampDurationValue">300</span> s</span>
+            </div>
+            <input id="rampDurationSlider" type="range" min="30" max="1800" step="10" value="300" />
+          </div>
+
+          <div class="toggle-row">
+            <label>
+              <input id="rampOnStartToggle" type="checkbox" />
+              <span>Enable ramp on start</span>
+            </label>
+            <span style="opacity:0.7;">Smooth transition</span>
+          </div>
+        </section>
+
+        <section class="panel">
+          <div class="panel-header">
+            <div class="panel-title">Ambience & Layers</div>
+            <div class="panel-sub">Blend your soundscape</div>
+          </div>
+
+          <div class="control-row">
+            <div class="control-label">
+              <span>Master Volume</span>
+              <span class="value"><span id="volValue">0.60</span></span>
+            </div>
+            <input id="volSlider" type="range" min="0" max="1" step="0.01" value="0.6" />
+          </div>
+
+          <div class="control-row">
+            <div class="control-label">
+              <span>Brown Noise</span>
+              <span class="value"><span id="brownValue">0.00</span></span>
+            </div>
+            <input id="brownSlider" type="range" min="0" max="1" step="0.01" value="0" />
+          </div>
+
+          <div class="control-row">
+            <div class="control-label">
+              <span>Pink Noise</span>
+              <span class="value"><span id="pinkValue">0.00</span></span>
+            </div>
+            <input id="pinkSlider" type="range" min="0" max="1" step="0.01" value="0" />
+          </div>
+
+          <div class="control-row">
+            <div class="control-label">
+              <span>Rain</span>
+              <span class="value"><span id="rainValue">0.00</span></span>
+            </div>
+            <input id="rainSlider" type="range" min="0" max="1" step="0.01" value="0" />
+          </div>
+
+          <div class="control-row">
+            <div class="control-label">
+              <span>Fire</span>
+              <span class="value"><span id="fireValue">0.00</span></span>
+            </div>
+            <input id="fireSlider" type="range" min="0" max="1" step="0.01" value="0" />
+          </div>
+        </section>
+
+        <section class="panel">
+          <div class="panel-header">
+            <div class="panel-title">Presets & Sessions</div>
+            <div class="panel-sub">Jump into tuned states</div>
+          </div>
+
+          <div class="preset-row">
+            <button class="preset-btn" data-preset="focus">Focus</button>
+            <button class="preset-btn" data-preset="deep">Deep Meditation</button>
+            <button class="preset-btn" data-preset="dream">Dreaming</button>
+            <button class="preset-btn" data-preset="energy">Energy</button>
+          </div>
+
+          <div class="preset-row" style="margin-top:6px;">
+            <button class="preset-btn custom" id="savePresetBtn">Save Custom</button>
+            <button class="preset-btn custom" id="loadPresetBtn">Load Custom</button>
+          </div>
+
+          <div class="button-row" style="margin-top:8px;">
+            <button class="btn small" id="saveSessionBtn">Save Session</button>
+            <button class="btn small" id="loadSessionBtn">Load Session</button>
+            <button class="btn small" id="shareSessionBtn">Share Link</button>
+          </div>
+        </section>
+      </aside>
+
+      <!-- Main area -->
+      <main class="main-area">
+        <section class="visualizer-card">
+          <div class="visualizer-canvas-wrap">
+            <canvas id="visualizer"></canvas>
+          </div>
+          <div class="visualizer-inner">
+            <div class="visual-top-row">
+              <span id="freqReadout">Carrier: 200 Hz • Beat: 8 Hz • Mode: Binaural</span>
+              <span id="modeReadout">Theme: Orb</span>
+            </div>
+
+            <div class="visual-center-row">
+              <div class="timer-shell">
+                <div class="breath-circle" id="breathCircle"></div>
+                <div class="timer-ring-bg"></div>
+                <div class="timer-ring-fg" id="timerProgress"></div>
+                <div class="timer-content">
+                  <div class="timer-main" id="timerDisplay">00:00</div>
+                  <div class="timer-sub" id="timerLabel">No timer</div>
+                </div>
+              </div>
+            </div>
+
+            <div class="timer-buttons">
+              <button class="btn small" data-min="5">5 min</button>
+              <button class="btn small" data-min="10">10 min</button>
+              <button class="btn small" data-min="20">20 min</button>
+              <button class="btn small" data-min="30">30 min</button>
+              <button class="btn small" data-min="60">60 min</button>
+              <button class="btn small" id="clearTimerBtn">Clear</button>
+            </div>
+
+            <div class="visual-bottom-row">
+              <span>Use comfortable volume. Stop if you feel discomfort.</span>
+              <button class="btn small" id="immerseBtn">Immerse Fullscreen</button>
+            </div>
+          </div>
+        </section>
+
+        <section class="info-card">
+          <h3>Session Notes</h3>
+          <p>
+            Lumina Beats blends binaural beats, isochronic pulses, and layered ambience into a focused sound ritual.
+            Use headphones for binaural effects. Start with low volume and short sessions.
+          </p>
+          <p>Presets are tuned to common brainwave bands:</p>
+          <ul>
+            <li><strong>Focus:</strong> Beta / low‑gamma (14–18 Hz)</li>
+            <li><strong>Deep Meditation:</strong> Theta (4–8 Hz)</li>
+            <li><strong>Dreaming:</strong> Low theta / delta (2–6 Hz)</li>
+            <li><strong>Energy:</strong> High beta (18–30 Hz)</li>
+          </ul>
+          <p class="info-footer">
+            This is not a medical device. If you have epilepsy, neurological conditions, or are sensitive to sound,
+            consult a professional before use. <span class="linkish" id="openScienceLink">Learn the science →</span>
+          </p>
+        </section>
+      </main>
+    </div>
+  </div>
+</div>
+
+<!-- Science Modal -->
+<div class="modal-backdrop" id="scienceModal">
+  <div class="modal">
+    <h2>The Science of Binaural & Isochronic Beats</h2>
+    <p>
+      <strong>Binaural beats</strong> arise when two pure tones of slightly different frequencies are presented separately
+      to each ear (for example, 200 Hz in the left ear and 208 Hz in the right). The auditory system and brainstem
+      integrate these signals, and the listener perceives a third “beat” at the frequency difference (8 Hz).
+    </p>
+    <p>
+      This perceived beat can drive a <em>frequency following response</em>, where neural oscillations tend to align with
+      the beat frequency. Different bands are associated with different states:
+    </p>
+    <ul>
+      <li><strong>Delta (0.5–4 Hz):</strong> Deep sleep, unconscious processes</li>
+      <li><strong>Theta (4–8 Hz):</strong> Meditation, creativity, hypnagogic imagery</li>
+      <li><strong>Alpha (8–12 Hz):</strong> Relaxed wakefulness, light meditation</li>
+      <li><strong>Beta (13–30 Hz):</strong> Focus, active thinking, problem solving</li>
+      <li><strong>Gamma (&gt;30 Hz):</strong> High‑level integration, binding, insight</li>
+    </ul>
+    <p>
+      <strong>Isochronic tones</strong> are single tones that are rapidly turned on and off, creating distinct pulses.
+      They do not require headphones and can also produce frequency following responses through rhythmic amplitude
+      modulation.
+    </p>
+    <p>
+      Research suggests that brainwave entrainment can modestly influence mood, attention, and relaxation in some
+      individuals, but effects vary and are not guaranteed. These tools should be viewed as supportive practices, not
+      medical treatments or cures.
+    </p>
+    <p>Representative peer‑reviewed sources include:</p>
+    <ul>
+      <li>Lane et al. (1998). Binaural auditory beats affect vigilance performance and mood.</li>
+      <li>Wahbeh et al. (2007). Binaural beat technology in humans: a pilot study.</li>
+      <li>Huang &amp; Charyton (2008). A comprehensive review of the psychological effects of brainwave entrainment.</li>
+    </ul>
+    <p>
+      Always listen at comfortable volumes. If you experience discomfort, dizziness, or agitation, stop the session and
+      rest in silence.
+    </p>
+    <div class="modal-close">
+      <button id="closeScienceBtn">Close</button>
+    </div>
+  </div>
+</div>
+
+<!-- Immerse Fullscreen -->
+<div class="immerse-overlay" id="immerseOverlay">
+  <div class="immerse-top">
+    <div class="immerse-top-left">Lumina Beats • Immersive View</div>
+    <div class="immerse-top-right">
+      <div class="theme-tabs" id="immersiveThemeTabs">
+        <button class="theme-tab active" data-theme="orb">Orb</button>
+        <button class="theme-tab" data-theme="particles">Particles</button>
+        <button class="theme-tab" data-theme="mandala">Mandala</button>
+        <button class="theme-tab" data-theme="waves">Waves</button>
+      </div>
+      <button class="btn small" id="exitImmerseBtn">Exit</button>
+    </div>
+  </div>
+  <div class="immerse-main">
+    <canvas id="immersiveCanvas"></canvas>
+    <div class="immerse-controls">
+      <span id="immersiveInfo">Carrier: 200 Hz • Beat: 8 Hz</span>
+      <span style="opacity:0.8;">Tap anywhere to keep focus. Escape to exit.</span>
+    </div>
+  </div>
+</div>
+
+<!-- Toasts -->
+<div class="toast-container" id="toastContainer"></div>
+
+<script>
+/* ======================================================
+   AUDIO ENGINE
+====================================================== */
+class LuminaAudioEngine {
+  constructor() {
+    this.ctx = null;
+
+    this.leftOsc = null;
+    this.rightOsc = null;
+    this.toneGain = null;
+    this.masterGain = null;
+
+    this.brownNode = null;
+    this.brownGain = null;
+
+    this.pinkNode = null;
+    this.pinkGain = null;
+
+    this.rainNode = null;
+    this.rainGain = null;
+
+    this.fireNode = null;
+    this.fireGain = null;
+
+    this.isoLFO = null;
+    this.isoDepthGain = null;
+
+    this.analyser = null;
+
+    this.currentCarrier = 200;
+    this.currentBeat = 8;
+    this.currentVolume = 0.6;
+    this.isoEnabled = false;
+
+    this.isPlaying = false;
+    this.rampActive = false;
+    this.rampStartTime = 0;
+    this.rampDuration = 0;
+    this.rampStartBeat = 8;
+    this.rampTargetBeat = 4;
+  }
+
+  ensureContext() {
+    if (this.ctx) return;
+
+    const AC = window.AudioContext || window.webkitAudioContext;
+    if (!AC) {
+      alert("Web Audio API not supported in this browser.");
+      return;
+    }
+
+    this.ctx = new AC();
+
+    // Master bus
+    const masterBus = this.ctx.createGain();
+    masterBus.gain.value = 1;
+
+    // Low-shelf EQ for warmth
+    const lowShelf = this.ctx.createBiquadFilter();
+    lowShelf.type = "lowshelf";
+    lowShelf.frequency.value = 200;
+    lowShelf.gain.value = 2;
+
+    // Dynamics compressor
+    const comp = this.ctx.createDynamicsCompressor();
+    comp.threshold.value = -10;
+    comp.knee.value = 12;
+    comp.ratio.value = 3;
+    comp.attack.value = 0.003;
+    comp.release.value = 0.25;
+
+    // Master gain
+    this.masterGain = this.ctx.createGain();
+    this.masterGain.gain.value = 0;
+
+    // Analyser
+    this.analyser = this.ctx.createAnalyser();
+    this.analyser.fftSize = 512;
+    this.analyser.smoothingTimeConstant = 0.8;
+
+    masterBus.connect(lowShelf);
+    lowShelf.connect(comp);
+    comp.connect(this.masterGain);
+    this.masterGain.connect(this.analyser);
+    this.analyser.connect(this.ctx.destination);
+
+    // Tone oscillators
+    this.leftOsc = this.ctx.createOscillator();
+    this.rightOsc = this.ctx.createOscillator();
+    this.leftOsc.type = "sine";
+    this.rightOsc.type = "sine";
+
+    this.toneGain = this.ctx.createGain();
+    this.toneGain.gain.value = 1.0;
+
+    const hasStereoPanner = !!this.ctx.createStereoPanner;
+    const leftPanner = hasStereoPanner ? this.ctx.createStereoPanner() : this.ctx.createPanner();
+    const rightPanner = hasStereoPanner ? this.ctx.createStereoPanner() : this.ctx.createPanner();
+
+    if (hasStereoPanner) {
+      leftPanner.pan.value = -1;
+      rightPanner.pan.value = 1;
+    } else {
+      leftPanner.setPosition(-1, 0, 0);
+      rightPanner.setPosition(1, 0, 0);
+    }
+
+    this.leftOsc.connect(this.toneGain);
+    this.rightOsc.connect(this.toneGain);
+    this.toneGain.connect(leftPanner);
+    this.toneGain.connect(rightPanner);
+    leftPanner.connect(masterBus);
+    rightPanner.connect(masterBus);
+
+    this.leftOsc.start();
+    this.rightOsc.start();
+
+    // Brown noise
+    this.brownGain = this.ctx.createGain();
+    this.brownGain.gain.value = 0;
+    this.brownNode = this.createBrownNoise();
+    this.brownNode.connect(this.brownGain).connect(masterBus);
+
+    // Pink noise
+    this.pinkGain = this.ctx.createGain();
+    this.pinkGain.gain.value = 0;
+    this.pinkNode = this.createPinkNoise();
+    this.pinkNode.connect(this.pinkGain).connect(masterBus);
+
+    // Rain (filtered noise)
+    this.rainGain = this.ctx.createGain();
+    this.rainGain.gain.value = 0;
+    this.rainNode = this.createRainNoise();
+    this.rainNode.connect(this.rainGain).connect(masterBus);
+
+    // Fire (filtered noise)
+    this.fireGain = this.ctx.createGain();
+    this.fireGain.gain.value = 0;
+    this.fireNode = this.createFireNoise();
+    this.fireNode.connect(this.fireGain).connect(masterBus);
+
+    // Isochronic LFO
+    this.isoLFO = this.ctx.createOscillator();
+    this.isoDepthGain = this.ctx.createGain();
+    this.isoDepthGain.gain.value = 0; // off by default
+    this.isoLFO.type = "square";
+    this.isoLFO.frequency.value = this.currentBeat;
+    this.isoLFO.connect(this.isoDepthGain).connect(this.toneGain.gain);
+    this.isoLFO.start();
+
+    // Initial frequencies
+    this.setFrequencies(this.currentCarrier, this.currentBeat);
+    this.setVolume(this.currentVolume);
+  }
+
+  createBrownNoise() {
+    const sampleRate = this.ctx.sampleRate || 44100;
+    const bufferSize = 2 * sampleRate;
+    const noiseBuffer = this.ctx.createBuffer(1, bufferSize, sampleRate);
+    const output = noiseBuffer.getChannelData(0);
+    let lastOut = 0.0;
+    for (let i = 0; i < bufferSize; i++) {
+      const white = Math.random() * 2 - 1;
+      output[i] = (lastOut + 0.02 * white) / 1.02;
+      lastOut = output[i];
+      output[i] *= 3.5;
+    }
+    const noise = this.ctx.createBufferSource();
+    noise.buffer = noiseBuffer;
+    noise.loop = true;
+    noise.start();
+    return noise;
+  }
+
+  createPinkNoise() {
+    const sampleRate = this.ctx.sampleRate || 44100;
+    const bufferSize = 2 * sampleRate;
+    const noiseBuffer = this.ctx.createBuffer(1, bufferSize, sampleRate);
+    const output = noiseBuffer.getChannelData(0);
+    let b0 = 0, b1 = 0, b2 = 0, b3 = 0, b4 = 0, b5 = 0, b6 = 0;
+    for (let i = 0; i < bufferSize; i++) {
+      const white = Math.random() * 2 - 1;
+      b0 = 0.99886 * b0 + white * 0.0555179;
+      b1 = 0.99332 * b1 + white * 0.0750759;
+      b2 = 0.96900 * b2 + white * 0.1538520;
+      b3 = 0.86650 * b3 + white * 0.3104856;
+      b4 = 0.55000 * b4 + white * 0.5329522;
+      b5 = -0.7616 * b5 - white * 0.0168980;
+      const pink = b0 + b1 + b2 + b3 + b4 + b5 + b6 + white * 0.5362;
+      b6 = white * 0.115926;
+      output[i] = pink * 0.11;
+    }
+    const noise = this.ctx.createBufferSource();
+    noise.buffer = noiseBuffer;
+    noise.loop = true;
+    noise.start();
+    return noise;
+  }
+
+  createRainNoise() {
+    const sampleRate = this.ctx.sampleRate || 44100;
+    const bufferSize = 2 * sampleRate;
+    const buffer = this.ctx.createBuffer(1, bufferSize, sampleRate);
+    const data = buffer.getChannelData(0);
+    for (let i = 0; i < bufferSize; i++) {
+      data[i] = (Math.random() * 2 - 1) * 0.4;
+    }
+    const src = this.ctx.createBufferSource();
+    src.buffer = buffer;
+    src.loop = true;
+
+    const hp = this.ctx.createBiquadFilter();
+    hp.type = "highpass";
+    hp.frequency.value = 500;
+
+    const lp = this.ctx.createBiquadFilter();
+    lp.type = "lowpass";
+    lp.frequency.value = 8000;
+
+    src.connect(hp).connect(lp);
+    src.start();
+    return lp;
+  }
+
+  createFireNoise() {
+    const sampleRate = this.ctx.sampleRate || 44100;
+    const bufferSize = 2 * sampleRate;
+    const buffer = this.ctx.createBuffer(1, bufferSize, sampleRate);
+    const data = buffer.getChannelData(0);
+    for (let i = 0; i < bufferSize; i++) {
+      data[i] = (Math.random() * 2 - 1) * (Math.random() * 0.6);
+    }
+    const src = this.ctx.createBufferSource();
+    src.buffer = buffer;
+    src.loop = true;
+
+    const bp = this.ctx.createBiquadFilter();
+    bp.type = "bandpass";
+    bp.frequency.value = 1200;
+    bp.Q.value = 0.8;
+
+    src.connect(bp);
+    src.start();
+    return bp;
+  }
+
+  setFrequencies(carrier, beat) {
+    this.ensureContext();
+    if (!this.ctx) return;
+    this.currentCarrier = carrier;
+    this.currentBeat = beat;
+    const now = this.ctx.currentTime;
+    const safeCarrier = Math.max(1, carrier);
+    const safeBeat = Math.max(0.1, beat);
+
+    this.leftOsc.frequency.cancelScheduledValues(now);
+    this.rightOsc.frequency.cancelScheduledValues(now);
+    this.isoLFO.frequency.cancelScheduledValues(now);
+
+    this.leftOsc.frequency.setTargetAtTime(safeCarrier, now, 0.08);
+    this.rightOsc.frequency.setTargetAtTime(safeCarrier + safeBeat, now, 0.08);
+    this.isoLFO.frequency.setTargetAtTime(safeBeat, now, 0.08);
+  }
+
+  setVolume(v) {
+    this.ensureContext();
+    if (!this.ctx) return;
+    this.currentVolume = v;
+    const now = this.ctx.currentTime;
+    this.masterGain.gain.cancelScheduledValues(now);
+    const target = this.isPlaying ? v : 0;
+    this.masterGain.gain.setTargetAtTime(target, now, 0.15);
+  }
+
+  setBrownVolume(v) {
+    this.ensureContext();
+    if (!this.ctx) return;
+    const now = this.ctx.currentTime;
+    this.brownGain.gain.cancelScheduledValues(now);
+    this.brownGain.gain.setTargetAtTime(v, now, 0.2);
+  }
+
+  setPinkVolume(v) {
+    this.ensureContext();
+    if (!this.ctx) return;
+    const now = this.ctx.currentTime;
+    this.pinkGain.gain.cancelScheduledValues(now);
+    this.pinkGain.gain.setTargetAtTime(v, now, 0.2);
+  }
+
+  setRainVolume(v) {
+    this.ensureContext();
+    if (!this.ctx) return;
+    const now = this.ctx.currentTime;
+    this.rainGain.gain.cancelScheduledValues(now);
+    this.rainGain.gain.setTargetAtTime(v, now, 0.2);
+  }
+
+  setFireVolume(v) {
+    this.ensureContext();
+    if (!this.ctx) return;
+    const now = this.ctx.currentTime;
+    this.fireGain.gain.cancelScheduledValues(now);
+    this.fireGain.gain.setTargetAtTime(v, now, 0.2);
+  }
+
+  setIsoEnabled(enabled) {
+    this.ensureContext();
+    if (!this.ctx) return;
+    this.isoEnabled = enabled;
+    const now = this.ctx.currentTime;
+    const depth = enabled ? 0.6 : 0.0;
+    this.isoDepthGain.gain.cancelScheduledValues(now);
+    this.isoDepthGain.gain.setTargetAtTime(depth, now, 0.1);
+  }
+
+  async togglePlay() {
+    this.ensureContext();
+    if (!this.ctx) return;
+
+    if (this.ctx.state === "suspended") {
+      try {
+        await this.ctx.resume();
+      } catch (e) {
+        console.warn("AudioContext resume failed:", e);
+      }
+    }
+
+    this.isPlaying = !this.isPlaying;
+    const now = this.ctx.currentTime;
+    this.masterGain.gain.cancelScheduledValues(now);
+
+    if (this.isPlaying) {
+      this.masterGain.gain.setValueAtTime(Math.max(0.0001, this.masterGain.gain.value), now);
+      this.masterGain.gain.exponentialRampToValueAtTime(Math.max(0.0001, this.currentVolume), now + 0.6);
+    } else {
+      const current = Math.max(0.0001, this.masterGain.gain.value);
+      this.masterGain.gain.setValueAtTime(current, now);
+      this.masterGain.gain.exponentialRampToValueAtTime(0.0001, now + 0.6);
+    }
+  }
+
+  stopWithFade(seconds = 1.5) {
+    if (!this.ctx || !this.masterGain) return;
+    const now = this.ctx.currentTime;
+    const current = Math.max(0.0001, this.masterGain.gain.value);
+    this.masterGain.gain.cancelScheduledValues(now);
+    this.masterGain.gain.setValueAtTime(current, now);
+    this.masterGain.gain.exponentialRampToValueAtTime(0.0001, now + seconds);
+    this.isPlaying = false;
+  }
+
+  startRamp(targetBeat, duration) {
+    if (!this.ctx) return;
+    this.rampActive = true;
+    this.rampStartTime = this.ctx.currentTime;
+    this.rampDuration = Math.max(0.1, duration);
+    this.rampStartBeat = this.currentBeat;
+    this.rampTargetBeat = targetBeat;
+  }
+
+  updateRamp() {
+    if (!this.ctx || !this.rampActive) return;
+    const now = this.ctx.currentTime;
+    const elapsed = now - this.rampStartTime;
+    if (elapsed >= this.rampDuration) {
+      this.setFrequencies(this.currentCarrier, this.rampTargetBeat);
+      this.rampActive = false;
+      return;
+    }
+    const t = elapsed / this.rampDuration;
+    const beat = this.rampStartBeat + (this.rampTargetBeat - this.rampStartBeat) * t;
+    this.setFrequencies(this.currentCarrier, beat);
+  }
+}
+
+const audioEngine = new LuminaAudioEngine();
+
+/* ======================================================
+   UI ELEMENTS
+====================================================== */
+const carrierSlider = document.getElementById("carrierSlider");
+const beatSlider = document.getElementById("beatSlider");
+const volSlider = document.getElementById("volSlider");
+const brownSlider = document.getElementById("brownSlider");
+const pinkSlider = document.getElementById("pinkSlider");
+const rainSlider = document.getElementById("rainSlider");
+const fireSlider = document.getElementById("fireSlider");
+const isoToggle = document.getElementById("isoToggle");
+const breathToggle = document.getElementById("breathToggle");
+
+const carrierValue = document.getElementById("carrierValue");
+const beatValue = document.getElementById("beatValue");
+const volValue = document.getElementById("volValue");
+const brownValue = document.getElementById("brownValue");
+const pinkValue = document.getElementById("pinkValue");
+const rainValue = document.getElementById("rainValue");
+const fireValue = document.getElementById("fireValue");
+
+const rampBeatSlider = document.getElementById("rampBeatSlider");
+const rampBeatValue = document.getElementById("rampBeatValue");
+const rampDurationSlider = document.getElementById("rampDurationSlider");
+const rampDurationValue = document.getElementById("rampDurationValue");
+const rampOnStartToggle = document.getElementById("rampOnStartToggle");
+
+const playBtn = document.getElementById("playBtn");
+const freqReadout = document.getElementById("freqReadout");
+const modeReadout = document.getElementById("modeReadout");
+
+const timerDisplay = document.getElementById("timerDisplay");
+const timerLabel = document.getElementById("timerLabel");
+const timerProgress = document.getElementById("timerProgress");
+const timerButtons = document.querySelectorAll(".timer-buttons .btn[data-min]");
+const clearTimerBtn = document.getElementById("clearTimerBtn");
+
+const themeTabs = document.getElementById("themeTabs");
+const immersiveThemeTabs = document.getElementById("immersiveThemeTabs");
+
+const scienceModal = document.getElementById("scienceModal");
+const scienceBtn = document.getElementById("scienceBtn");
+const openScienceLink = document.getElementById("openScienceLink");
+const closeScienceBtn = document.getElementById("closeScienceBtn");
+
+const immerseBtn = document.getElementById("immerseBtn");
+const immerseOverlay = document.getElementById("immerseOverlay");
+const exitImmerseBtn = document.getElementById("exitImmerseBtn");
+const immersiveInfo = document.getElementById("immersiveInfo");
+
+const breathCircle = document.getElementById("breathCircle");
+
+const toastContainer = document.getElementById("toastContainer");
+
+const CUSTOM_PRESET_KEY = "lumina_custom_preset_v4";
+const SESSION_KEY = "lumina_session_v4";
+
+let currentTheme = "orb";
+
+/* ======================================================
+   TOASTS
+====================================================== */
+function showToast(message, type = "info") {
+  const toast = document.createElement("div");
+  toast.className = "toast";
+  const labelSpan = document.createElement("span");
+  labelSpan.className = "label";
+  labelSpan.textContent = message;
+  const typeSpan = document.createElement("span");
+  typeSpan.className = "type";
+  typeSpan.textContent = type.toUpperCase();
+  toast.appendChild(labelSpan);
+  toast.appendChild(typeSpan);
+  toastContainer.appendChild(toast);
+  requestAnimationFrame(() => toast.classList.add("show"));
+  setTimeout(() => {
+    toast.classList.remove("show");
+    setTimeout(() => toast.remove(), 200);
+  }, 2600);
+}
+
+/* ======================================================
+   FREQUENCY & LAYER CONTROLS
+====================================================== */
+function updateFreqReadout() {
+  const mode = isoToggle.checked ? "Binaural + Isochronic" : "Binaural";
+  freqReadout.textContent =
+    `Carrier: ${carrierSlider.value} Hz • Beat: ${beatSlider.value} Hz • Mode: ${mode}`;
+  immersiveInfo.textContent =
+    `Carrier: ${carrierSlider.value} Hz • Beat: ${beatSlider.value} Hz`;
+}
+
+carrierSlider.addEventListener("input", () => {
+  const c = +carrierSlider.value;
+  carrierValue.textContent = c;
+  audioEngine.setFrequencies(c, +beatSlider.value);
+  updateFreqReadout();
+});
+
+beatSlider.addEventListener("input", () => {
+  const b = +beatSlider.value;
+  beatValue.textContent = b;
+  audioEngine.setFrequencies(+carrierSlider.value, b);
+  updateFreqReadout();
+});
+
+volSlider.addEventListener("input", () => {
+  const v = +volSlider.value;
+  volValue.textContent = v.toFixed(2);
+  audioEngine.setVolume(v);
+});
+
+brownSlider.addEventListener("input", () => {
+  const v = +brownSlider.value;
+  brownValue.textContent = v.toFixed(2);
+  audioEngine.setBrownVolume(v);
+});
+
+pinkSlider.addEventListener("input", () => {
+  const v = +pinkSlider.value;
+  pinkValue.textContent = v.toFixed(2);
+  audioEngine.setPinkVolume(v);
+});
+
+rainSlider.addEventListener("input", () => {
+  const v = +rainSlider.value;
+  rainValue.textContent = v.toFixed(2);
+  audioEngine.setRainVolume(v);
+});
+
+fireSlider.addEventListener("input", () => {
+  const v = +fireSlider.value;
+  fireValue.textContent = v.toFixed(2);
+  audioEngine.setFireVolume(v);
+});
+
+isoToggle.addEventListener("change", () => {
+  audioEngine.setIsoEnabled(isoToggle.checked);
+  updateFreqReadout();
+});
+
+breathToggle.addEventListener("change", () => {
+  if (!breathToggle.checked) {
+    breathCircle.style.opacity = "0";
+    breathCircle.style.transform = "scale(1)";
+  }
+});
+
+/* Frequency ramp controls */
+rampBeatSlider.addEventListener("input", () => {
+  const v = +rampBeatSlider.value;
+  rampBeatValue.textContent = v;
+});
+
+rampDurationSlider.addEventListener("input", () => {
+  const v = +rampDurationSlider.value;
+  rampDurationValue.textContent = v;
+});
+
+/* Play / Pause */
+playBtn.addEventListener("click", async () => {
+  await audioEngine.togglePlay();
+  playBtn.textContent = audioEngine.isPlaying ? "Pause Session" : "Start Session";
+
+  if (audioEngine.isPlaying && rampOnStartToggle.checked) {
+    audioEngine.startRamp(+rampBeatSlider.value, +rampDurationSlider.value);
+    showToast("Frequency ramp started", "info");
+  }
+});
+
+/* Global gesture to unlock audio */
+window.addEventListener("click", () => {
+  if (audioEngine.ctx && audioEngine.ctx.state === "suspended") {
+    audioEngine.ctx.resume().catch(() => {});
+  }
+}, { once: true });
+
+/* ======================================================
+   PRESETS
+====================================================== */
+const presetButtons = document.querySelectorAll(".preset-btn[data-preset]");
+
+function applyPreset(name) {
+  let carrier = 200;
+  let beat = 8;
+  switch (name) {
+    case "focus":
+      carrier = 220;
+      beat = 16;
+      break;
+    case "deep":
+      carrier = 180;
+      beat = 6;
+      break;
+    case "dream":
+      carrier = 160;
+      beat = 4;
+      break;
+    case "energy":
+      carrier = 240;
+      beat = 20;
+      break;
+  }
+  carrierSlider.value = carrier;
+  beatSlider.value = beat;
+  carrierValue.textContent = carrier;
+  beatValue.textContent = beat;
+  audioEngine.setFrequencies(carrier, beat);
+  updateFreqReadout();
+  showToast(`Preset applied: ${name}`, "info");
+}
+
+presetButtons.forEach(btn => {
+  btn.addEventListener("click", () => {
+    const preset = btn.getAttribute("data-preset");
+    applyPreset(preset);
+  });
+});
+
+document.getElementById("savePresetBtn").addEventListener("click", () => {
+  const preset = {
+    carrier: +carrierSlider.value,
+    beat: +beatSlider.value,
+    volume: +volSlider.value,
+    brown: +brownSlider.value,
+    pink: +pinkSlider.value,
+    rain: +rainSlider.value,
+    fire: +fireSlider.value,
+    iso: isoToggle.checked,
+    breath: breathToggle.checked,
+    rampBeat: +rampBeatSlider.value,
+    rampDuration: +rampDurationSlider.value,
+    rampOnStart: rampOnStartToggle.checked
+  };
+  try {
+    localStorage.setItem(CUSTOM_PRESET_KEY, JSON.stringify(preset));
+    showToast("Custom preset saved", "success");
+  } catch {
+    showToast("Unable to save preset (storage blocked)", "danger");
+  }
+});
+
+document.getElementById("loadPresetBtn").addEventListener("click", () => {
+  let raw;
+  try {
+    raw = localStorage.getItem(CUSTOM_PRESET_KEY);
+  } catch {
+    showToast("Unable to access presets (storage blocked)", "danger");
+    return;
+  }
+  if (!raw) {
+    showToast("No custom preset saved yet", "info");
+    return;
+  }
+  try {
+    const p = JSON.parse(raw);
+    carrierSlider.value = p.carrier;
+    beatSlider.value = p.beat;
+    volSlider.value = p.volume;
+    brownSlider.value = p.brown;
+    pinkSlider.value = p.pink;
+    rainSlider.value = p.rain;
+    fireSlider.value = p.fire;
+    isoToggle.checked = !!p.iso;
+    breathToggle.checked = !!p.breath;
+    rampBeatSlider.value = p.rampBeat;
+    rampDurationSlider.value = p.rampDuration;
+    rampOnStartToggle.checked = !!p.rampOnStart;
+
+    carrierValue.textContent = p.carrier;
+    beatValue.textContent = p.beat;
+    volValue.textContent = p.volume.toFixed(2);
+    brownValue.textContent = p.brown.toFixed(2);
+    pinkValue.textContent = p.pink.toFixed(2);
+    rainValue.textContent = p.rain.toFixed(2);
+    fireValue.textContent = p.fire.toFixed(2);
+    rampBeatValue.textContent = p.rampBeat;
+    rampDurationValue.textContent = p.rampDuration;
+
+    audioEngine.setFrequencies(p.carrier, p.beat);
+    audioEngine.setVolume(p.volume);
+    audioEngine.setBrownVolume(p.brown);
+    audioEngine.setPinkVolume(p.pink);
+    audioEngine.setRainVolume(p.rain);
+    audioEngine.setFireVolume(p.fire);
+    audioEngine.setIsoEnabled(!!p.iso);
+    updateFreqReadout();
+    showToast("Custom preset loaded", "success");
+  } catch {
+    showToast("Failed to load custom preset", "danger");
+  }
+});
+
+/* ======================================================
+   TIMER
+====================================================== */
+let currentTimerTotal = 0;
+let currentTimerRemaining = 0;
+let timerInterval = null;
+
+function formatTime(sec) {
+  const m = Math.floor(sec / 60);
+  const s = sec % 60;
+  return `${String(m).padStart(2,"0")}:${String(s).padStart(2,"0")}`;
+}
+
+function updateTimerUI() {
+  if (!currentTimerTotal || currentTimerRemaining <= 0) {
+    timerDisplay.textContent = "00:00";
+    timerLabel.textContent = "No timer";
+    timerProgress.style.transform = "rotate(-90deg)";
+    return;
+  }
+  timerDisplay.textContent = formatTime(currentTimerRemaining);
+  timerLabel.textContent = `Session timer: ${formatTime(currentTimerTotal)}`;
+  const frac = 1 - (currentTimerRemaining / currentTimerTotal);
+  const deg = -90 + frac * 360;
+  timerProgress.style.transform = `rotate(${deg}deg)`;
+}
+
+function clearTimer() {
+  currentTimerTotal = 0;
+  currentTimerRemaining = 0;
+  if (timerInterval) {
+    clearInterval(timerInterval);
+    timerInterval = null;
+  }
+  updateTimerUI();
+}
+
+function setTimer(seconds) {
+  clearTimer();
+  currentTimerTotal = seconds;
+  currentTimerRemaining = seconds;
+  updateTimerUI();
+  timerInterval = setInterval(() => {
+    currentTimerRemaining--;
+    if (currentTimerRemaining <= 0) {
+      clearTimer();
+      audioEngine.stopWithFade(1.5);
+      playBtn.textContent = "Start Session";
+      showToast("Session complete", "success");
+    } else {
+      updateTimerUI();
+    }
+  }, 1000);
+}
+
+timerButtons.forEach(btn => {
+  btn.addEventListener("click", () => {
+    const min = +btn.getAttribute("data-min");
+    setTimer(min * 60);
+    showToast(`Timer set: ${min} minutes`, "info");
+  });
+});
+
+clearTimerBtn.addEventListener("click", () => {
+  clearTimer();
+  showToast("Timer cleared", "info");
+});
+
+/* ======================================================
+   SESSION SAVE / LOAD / SHARE
+====================================================== */
+document.getElementById("saveSessionBtn").addEventListener("click", () => {
+  const session = {
+    carrier: +carrierSlider.value,
+    beat: +beatSlider.value,
+    volume: +volSlider.value,
+    brown: +brownSlider.value,
+    pink: +pinkSlider.value,
+    rain: +rainSlider.value,
+    fire: +fireSlider.value,
+    iso: isoToggle.checked,
+    breath: breathToggle.checked,
+    rampBeat: +rampBeatSlider.value,
+    rampDuration: +rampDurationSlider.value,
+    rampOnStart: rampOnStartToggle.checked,
+    timerSeconds: currentTimerTotal,
+    theme: currentTheme
+  };
+  try {
+    localStorage.setItem(SESSION_KEY, JSON.stringify(session));
+    showToast("Session saved", "success");
+  } catch {
+    showToast("Unable to save session (storage blocked)", "danger");
+  }
+});
+
+document.getElementById("loadSessionBtn").addEventListener("click", () => {
+  let raw;
+  try {
+    raw = localStorage.getItem(SESSION_KEY);
+  } catch {
+    showToast("Unable to access sessions (storage blocked)", "danger");
+    return;
+  }
+  if (!raw) {
+    showToast("No session saved yet", "info");
+    return;
+  }
+  try {
+    const s = JSON.parse(raw);
+    carrierSlider.value = s.carrier;
+    beatSlider.value = s.beat;
+    volSlider.value = s.volume;
+    brownSlider.value = s.brown;
+    pinkSlider.value = s.pink;
+    rainSlider.value = s.rain;
+    fireSlider.value = s.fire;
+    isoToggle.checked = !!s.iso;
+    breathToggle.checked = !!s.breath;
+    rampBeatSlider.value = s.rampBeat;
+    rampDurationSlider.value = s.rampDuration;
+    rampOnStartToggle.checked = !!s.rampOnStart;
+    currentTheme = s.theme || "orb";
+
+    carrierValue.textContent = s.carrier;
+    beatValue.textContent = s.beat;
+    volValue.textContent = s.volume.toFixed(2);
+    brownValue.textContent = s.brown.toFixed(2);
+    pinkValue.textContent = s.pink.toFixed(2);
+    rainValue.textContent = s.rain.toFixed(2);
+    fireValue.textContent = s.fire.toFixed(2);
+    rampBeatValue.textContent = s.rampBeat;
+    rampDurationValue.textContent = s.rampDuration;
+
+    audioEngine.setFrequencies(s.carrier, s.beat);
+    audioEngine.setVolume(s.volume);
+    audioEngine.setBrownVolume(s.brown);
+    audioEngine.setPinkVolume(s.pink);
+    audioEngine.setRainVolume(s.rain);
+    audioEngine.setFireVolume(s.fire);
+    audioEngine.setIsoEnabled(!!s.iso);
+    updateFreqReadout();
+    setThemeTabs(currentTheme);
+    showToast("Session loaded", "success");
+
+    if (s.timerSeconds) {
+      setTimer(s.timerSeconds);
+    }
+  } catch {
+    showToast("Failed to load session", "danger");
+  }
+});
+
+document.getElementById("shareSessionBtn").addEventListener("click", () => {
+  const params = new URLSearchParams({
+    c: carrierSlider.value,
+    b: beatSlider.value,
+    v: volSlider.value,
+    br: brownSlider.value,
+    pk: pinkSlider.value,
+    rn: rainSlider.value,
+    fr: fireSlider.value,
+    i: isoToggle.checked ? "1" : "0",
+    bt: breathToggle.checked ? "1" : "0",
+    rb: rampBeatSlider.value,
+    rd: rampDurationSlider.value,
+    rs: rampOnStartToggle.checked ? "1" : "0",
+    t: currentTimerTotal.toString(),
+    th: currentTheme
+  });
+  const url = `${location.origin}${location.pathname}?${params.toString()}`;
+  if (navigator.clipboard && navigator.clipboard.writeText) {
+    navigator.clipboard.writeText(url).then(() => {
+      showToast("Session link copied to clipboard", "success");
+    }).catch(() => {
+      showToast("Copy failed, showing URL prompt", "info");
+      prompt("Copy this session URL:", url);
+    });
+  } else {
+    prompt("Copy this session URL:", url);
+  }
+});
+
+/* ======================================================
+   SCIENCE MODAL
+====================================================== */
+function openScience() {
+  scienceModal.style.display = "flex";
+}
+function closeScience() {
+  scienceModal.style.display = "none";
+}
+
+scienceBtn.addEventListener("click", openScience);
+openScienceLink.addEventListener("click", openScience);
+closeScienceBtn.addEventListener("click", closeScience);
+scienceModal.addEventListener("click", e => {
+  if (e.target === scienceModal) closeScience();
+});
+
+/* ======================================================
+   THEMES
+====================================================== */
+function setThemeTabs(theme) {
+  currentTheme = theme;
+  modeReadout.textContent = `Theme: ${theme.charAt(0).toUpperCase() + theme.slice(1)}`;
+  [...themeTabs.querySelectorAll(".theme-tab")].forEach(btn => {
+    btn.classList.toggle("active", btn.getAttribute("data-theme") === theme);
+  });
+  [...immersiveThemeTabs.querySelectorAll(".theme-tab")].forEach(btn => {
+    btn.classList.toggle("active", btn.getAttribute("data-theme") === theme);
+  });
+}
+
+themeTabs.addEventListener("click", e => {
+  const btn = e.target.closest(".theme-tab");
+  if (!btn) return;
+  setThemeTabs(btn.getAttribute("data-theme"));
+});
+
+immersiveThemeTabs.addEventListener("click", e => {
+  const btn = e.target.closest(".theme-tab");
+  if (!btn) return;
+  setThemeTabs(btn.getAttribute("data-theme"));
+});
+
+/* ======================================================
+   ORB PRIME WEBGL VISUALIZER
+====================================================== */
+class OrbPrimeVisualizer {
+  constructor(canvas) {
+    this.canvas = canvas;
+    this.gl = null;
+    this.program = null;
+    this.positionBuffer = null;
+    this.uTime = null;
+    this.uResolution = null;
+    this.uLow = null;
+    this.uMid = null;
+    this.uHigh = null;
+    this.uVolume = null;
+    this.uBeat = null;
+    this.uCarrier = null;
+    this.uIso = null;
+    this.uBreath = null;
+    this.lastWidth = 0;
+    this.lastHeight = 0;
+    this.init();
+  }
+
+  init() {
+    const gl = this.canvas.getContext("webgl", { antialias: true, alpha: false });
+    if (!gl) return;
+    this.gl = gl;
+
+    const vertexSrc = `
+      attribute vec2 a_position;
+      void main() {
+        gl_Position = vec4(a_position, 0.0, 1.0);
+      }
+    `;
+
+    const fragmentSrc = `
+      precision highp float;
+      uniform float u_time;
+      uniform vec2  u_resolution;
+      uniform float u_low;
+      uniform float u_mid;
+      uniform float u_high;
+      uniform float u_volume;
+      uniform float u_beat;
+      uniform float u_carrier;
+      uniform float u_iso;
+      uniform float u_breath;
+
+      float hash(vec2 p) {
+        return fract(sin(dot(p, vec2(127.1, 311.7))) * 43758.5453123);
+      }
+
+      void main() {
+        vec2 uv = (gl_FragCoord.xy / u_resolution.xy) * 2.0 - 1.0;
+        uv.x *= u_resolution.x / u_resolution.y;
+
+        float t = u_time;
+        float beatPhase = sin(t * u_beat * 2.0 * 3.14159 * 0.25);
+        float breathPhase = 0.5 + 0.5 * sin(t * u_breath * 2.0 * 3.14159 * 0.25);
+
+        float carrierRot = t * u_carrier * 0.0004;
+        float s = sin(carrierRot);
+        float c = cos(carrierRot);
+        mat2 rot = mat2(c, -s, s, c);
+        uv = rot * uv;
+
+        float dist = length(uv);
+        float baseRadius = 0.35 + 0.08 * beatPhase + 0.08 * breathPhase;
+        float edge = smoothstep(baseRadius, baseRadius - 0.15, dist);
+
+        float glow = exp(-dist * 4.0);
+        float halo = exp(-pow(dist * 2.2, 2.0));
+
+        float isoPulse = mix(0.0, 1.0, u_iso) * step(0.85, fract(t * u_beat));
+        float energy = u_low * 0.4 + u_mid * 0.8 + u_high * 1.2 + u_volume * 0.6;
+        energy = clamp(energy, 0.0, 1.5);
+
+        vec3 innerColor = vec3(0.95, 0.9, 1.0);
+        vec3 midColor   = vec3(0.78, 0.62, 1.0);
+        vec3 outerColor = vec3(0.16, 0.10, 0.35);
+
+        float hueShift = 0.1 * beatPhase + 0.15 * breathPhase + 0.1 * u_iso;
+        vec3 tint = mix(vec3(0.7,0.6,1.0), vec3(0.4,0.9,0.9), hueShift * 0.5 + 0.5);
+
+        vec3 col = vec3(0.0);
+        col += innerColor * glow * 1.4;
+        col += midColor   * halo * 0.9;
+        col += outerColor * (1.0 - edge) * 0.4;
+
+        col *= (0.6 + 0.8 * energy);
+        col = mix(col, tint, 0.25 + 0.35 * energy);
+
+        float vignette = smoothstep(1.4, 0.4, dist);
+        col *= vignette;
+
+        float grain = hash(gl_FragCoord.xy + t);
+        col += (grain - 0.5) * 0.04;
+
+        col += isoPulse * vec3(0.4, 0.2, 0.6);
+
+        gl_FragColor = vec4(col, 1.0);
+      }
+    `;
+
+    const vs = this._compileShader(gl.VERTEX_SHADER, vertexSrc);
+    const fs = this._compileShader(gl.FRAGMENT_SHADER, fragmentSrc);
+    if (!vs || !fs) return;
+
+    const program = gl.createProgram();
+    gl.attachShader(program, vs);
+    gl.attachShader(program, fs);
+    gl.linkProgram(program);
+    if (!gl.getProgramParameter(program, gl.LINK_STATUS)) {
+      console.error("Program link error:", gl.getProgramInfoLog(program));
+      return;
+    }
+    this.program = program;
+
+    const positionLocation = gl.getAttribLocation(program, "a_position");
+    this.positionBuffer = gl.createBuffer();
+    gl.bindBuffer(gl.ARRAY_BUFFER, this.positionBuffer);
+    const positions = new Float32Array([
+      -1, -1,
+       1, -1,
+      -1,  1,
+      -1,  1,
+       1, -1,
+       1,  1
+    ]);
+    gl.bufferData(gl.ARRAY_BUFFER, positions, gl.STATIC_DRAW);
+
+    this.uTime       = gl.getUniformLocation(program, "u_time");
+    this.uResolution = gl.getUniformLocation(program, "u_resolution");
+    this.uLow        = gl.getUniformLocation(program, "u_low");
+    this.uMid        = gl.getUniformLocation(program, "u_mid");
+    this.uHigh       = gl.getUniformLocation(program, "u_high");
+    this.uVolume     = gl.getUniformLocation(program, "u_volume");
+    this.uBeat       = gl.getUniformLocation(program, "u_beat");
+    this.uCarrier    = gl.getUniformLocation(program, "u_carrier");
+    this.uIso        = gl.getUniformLocation(program, "u_iso");
+    this.uBreath     = gl.getUniformLocation(program, "u_breath");
+
+    gl.enableVertexAttribArray(positionLocation);
+    gl.vertexAttribPointer(positionLocation, 2, gl.FLOAT, false, 0, 0);
+
+    gl.clearColor(0.02, 0.02, 0.06, 1.0);
+  }
+
+  _compileShader(type, src) {
+    const gl = this.gl;
+    const shader = gl.createShader(type);
+    gl.shaderSource(shader, src);
+    gl.compileShader(shader);
+    if (!gl.getShaderParameter(shader, gl.COMPILE_STATUS)) {
+      console.error("Shader compile error:", gl.getShaderInfoLog(shader));
+      return null;
+    }
+    return shader;
+  }
+
+  resizeIfNeeded() {
+    if (!this.gl) return;
+    const dpr = window.devicePixelRatio || 1;
+    const rect = this.canvas.getBoundingClientRect();
+    const width = Math.max(1, Math.floor(rect.width * dpr));
+    const height = Math.max(1, Math.floor(rect.height * dpr));
+    if (width !== this.lastWidth || height !== this.lastHeight) {
+      this.lastWidth = width;
+      this.lastHeight = height;
+      this.canvas.width = width;
+      this.canvas.height = height;
+      this.gl.viewport(0, 0, width, height);
+    }
+  }
+
+  render(timeSeconds, metrics) {
+    if (!this.gl || !this.program) return;
+    this.resizeIfNeeded();
+    const gl = this.gl;
+    gl.useProgram(this.program);
+
+    gl.uniform1f(this.uTime, timeSeconds);
+    gl.uniform2f(this.uResolution, this.canvas.width, this.canvas.height);
+    gl.uniform1f(this.uLow, metrics.low);
+    gl.uniform1f(this.uMid, metrics.mid);
+    gl.uniform1f(this.uHigh, metrics.high);
+    gl.uniform1f(this.uVolume, metrics.volume);
+    gl.uniform1f(this.uBeat, metrics.beat);
+    gl.uniform1f(this.uCarrier, metrics.carrier);
+    gl.uniform1f(this.uIso, metrics.isoEnabled ? 1.0 : 0.0);
+    gl.uniform1f(this.uBreath, metrics.breathRate);
+
+    gl.clear(gl.COLOR_BUFFER_BIT);
+    gl.drawArrays(gl.TRIANGLES, 0, 6);
+  }
+}
+
+const mainCanvas = document.getElementById("visualizer");
+const immersiveCanvas = document.getElementById("immersiveCanvas");
+const mainOrb = new OrbPrimeVisualizer(mainCanvas);
+const immersiveOrb = new OrbPrimeVisualizer(immersiveCanvas);
+
+let analyserFreqData = new Uint8Array(256);
+
+/* ======================================================
+   IMMERSE FULLSCREEN
+====================================================== */
+function openImmerse() {
+  immerseOverlay.style.display = "flex";
+}
+function closeImmerse() {
+  immerseOverlay.style.display = "none";
+}
+
+immerseBtn.addEventListener("click", () => {
+  openImmerse();
+  showToast("Immersive view enabled", "info");
+});
+
+exitImmerseBtn.addEventListener("click", () => {
+  closeImmerse();
+});
+
+immerseOverlay.addEventListener("click", e => {
+  if (e.target === immerseOverlay) {
+    closeImmerse();
+  }
+});
+
+/* ======================================================
+   URL PARAM LOADING
+====================================================== */
+(function loadFromURL() {
+  const params = new URLSearchParams(location.search);
+  if (!params.has("c")) return;
+  const c = +params.get("c") || 200;
+  const b = +params.get("b") || 8;
+  const v = +params.get("v") || 0.6;
+  const br = +params.get("br") || 0;
+  const pk = +params.get("pk") || 0;
+  const rn = +params.get("rn") || 0;
+  const fr = +params.get("fr") || 0;
+  const i = params.get("i") === "1";
+  const bt = params.get("bt") === "1";
+  const rb = +params.get("rb") || 4;
+  const rd = +params.get("rd") || 300;
+  const rs = params.get("rs") === "1";
+  const t = +params.get("t") || 0;
+  const th = params.get("th") || "orb";
+
+  carrierSlider.value = c;
+  beatSlider.value = b;
+  volSlider.value = v;
+  brownSlider.value = br;
+  pinkSlider.value = pk;
+  rainSlider.value = rn;
+  fireSlider.value = fr;
+  isoToggle.checked = i;
+  breathToggle.checked = bt;
+  rampBeatSlider.value = rb;
+  rampDurationSlider.value = rd;
+  rampOnStartToggle.checked = rs;
+  currentTheme = th;
+
+  carrierValue.textContent = c;
+  beatValue.textContent = b;
+  volValue.textContent = v.toFixed(2);
+  brownValue.textContent = br.toFixed(2);
+  pinkValue.textContent = pk.toFixed(2);
+  rainValue.textContent = rn.toFixed(2);
+  fireValue.textContent = fr.toFixed(2);
+  rampBeatValue.textContent = rb;
+  rampDurationValue.textContent = rd;
+
+  audioEngine.setFrequencies(c, b);
+  audioEngine.setVolume(v);
+  audioEngine.setBrownVolume(br);
+  audioEngine.setPinkVolume(pk);
+  audioEngine.setRainVolume(rn);
+  audioEngine.setFireVolume(fr);
+  audioEngine.setIsoEnabled(i);
+  updateFreqReadout();
+  setThemeTabs(currentTheme);
+
+  if (t > 0) {
+    setTimer(t);
+  }
+
+  showToast("Session loaded from link", "info");
+})();
+
+/* ======================================================
+   MAIN RENDER LOOP (AUDIO + VISUALS)
+====================================================== */
+function computeMetrics() {
+  let low = 0, mid = 0, high = 0, volume = 0;
+  if (audioEngine.analyser) {
+    if (analyserFreqData.length !== audioEngine.analyser.frequencyBinCount) {
+      analyserFreqData = new Uint8Array(audioEngine.analyser.frequencyBinCount);
+    }
+    audioEngine.analyser.getByteFrequencyData(analyserFreqData);
+    const len = analyserFreqData.length;
+    if (len > 0) {
+      const lowEnd = Math.floor(len * 0.15);
+      const midEnd = Math.floor(len * 0.5);
+      for (let i = 0; i < len; i++) {
+        const v = analyserFreqData[i] / 255;
+        volume += v;
+        if (i < lowEnd) low += v;
+        else if (i < midEnd) mid += v;
+        else high += v;
+      }
+      volume /= len;
+      low /= lowEnd || 1;
+      mid /= (midEnd - lowEnd) || 1;
+      high /= (len - midEnd) || 1;
+    }
+  }
+  const beat = +beatSlider.value || 8;
+  const carrier = +carrierSlider.value || 200;
+  const isoEnabled = isoToggle.checked;
+  const breathRate = beat; // breathing synced to beat frequency
+  return { low, mid, high, volume, beat, carrier, isoEnabled, breathRate };
+}
+
+function renderLoop(timestamp) {
+  const timeSeconds = timestamp * 0.001;
+
+  // Frequency ramp
+  if (audioEngine.rampActive) {
+    audioEngine.updateRamp();
+    beatSlider.value = audioEngine.currentBeat.toFixed(1);
+    beatValue.textContent = audioEngine.currentBeat.toFixed(1);
+    updateFreqReadout();
+  }
+
+  // Breathing guide circle
+  if (breathToggle.checked) {
+    const beat = +beatSlider.value || 8;
+    const cycle = 60 / beat;
+    const phase = (timeSeconds / cycle) * Math.PI * 2;
+    const t = (Math.sin(phase) + 1) / 2;
+    const scale = 0.8 + t * 0.4;
+    breathCircle.style.opacity = (0.2 + t * 0.6).toFixed(2);
+    breathCircle.style.transform = `scale(${scale.toFixed(3)})`;
+  }
+
+  const metrics = computeMetrics();
+
+  if (currentTheme === "orb") {
+    mainOrb.render(timeSeconds, metrics);
+    if (immerseOverlay.style.display === "flex") {
+      immersiveOrb.render(timeSeconds, metrics);
+    }
+  } else {
+    // For now, other themes reuse Orb visuals until extended
+    mainOrb.render(timeSeconds, metrics);
+    if (immerseOverlay.style.display === "flex") {
+      immersiveOrb.render(timeSeconds, metrics);
+    }
+  }
+
+  requestAnimationFrame(renderLoop);
+}
+requestAnimationFrame(renderLoop);
+</script>
+</body>
+</html>
