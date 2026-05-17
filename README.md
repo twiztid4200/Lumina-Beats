@@ -1,2 +1,0 @@
-# Lumina-Beats
-Binaural beats 
